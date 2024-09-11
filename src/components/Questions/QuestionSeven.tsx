@@ -1,12 +1,5 @@
 import React, { useState } from 'react'
-import {
-  TextField,
-  Button,
-  Typography,
-  List,
-  ListItem,
-  Box,
-} from '@mui/material'
+import { TextField, Button, Typography, Box } from '@mui/material'
 
 interface CarrotType {
   kg: number
@@ -14,7 +7,6 @@ interface CarrotType {
 }
 
 const getMaxValue = (carrotTypes: CarrotType[], capacity: number) => {
-  // Create a DP array to store maximum values for each capacity
   const dp = Array(capacity + 1).fill(0)
 
   for (let i = 0; i <= capacity; i++) {
