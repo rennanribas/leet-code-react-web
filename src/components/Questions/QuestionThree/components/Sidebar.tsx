@@ -15,16 +15,6 @@ const Sidebar: React.FC = () => {
       <Typography variant='h4' align='center'>
         Sidebar
       </Typography>
-      <List>
-        <ListItem>
-          <Button color='primary'>Question 1: Find Duplicates</Button>
-        </ListItem>
-        <ListItem>
-          <Button color='primary'>
-            Question 3: Styling React Components using flex
-          </Button>
-        </ListItem>
-      </List>
     </Box>
   )
 }

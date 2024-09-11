@@ -1,11 +1,11 @@
 import React from 'react'
 import { Box } from '@mui/material'
-import Sidebar from '../Sidebar'
-import Hero from '../Hero'
-import MainContent from '../MainContent'
-import ExtraContent from '../ExtraContent'
-import RelatedImages from '../RelatedImages'
-import RelatedPosts from '../RelatedPosts'
+import Sidebar from './components/Sidebar'
+import Hero from './components/Hero'
+import MainContent from './components/MainContent'
+import ExtraContent from './components/ExtraContent'
+import RelatedImages from './components/RelatedImages'
+import RelatedPosts from './components/RelatedPosts'
 
 const QuestionThree: React.FC = () => {
   return (

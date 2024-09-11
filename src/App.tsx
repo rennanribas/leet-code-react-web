@@ -6,7 +6,9 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 
 const QuestionOne = lazy(() => import('./components/Questions/QuestionOne'))
 const QuestionTwo = lazy(() => import('./components/Questions/QuestionTwo'))
-const QuestionThree = lazy(() => import('./components/Questions/QuestionThree'))
+const QuestionThree = lazy(
+  () => import('./components/Questions/QuestionThree/QuestionThree')
+)
 const QuestionFour = lazy(() => import('./components/Questions/QuestionFour'))
 const QuestionFive = lazy(() => import('./components/Questions/QuestionFive'))
 const QuestionSix = lazy(() => import('./components/Questions/QuestionSix'))
@@ -22,16 +24,16 @@ const App: React.FC = () => {
         paddingY: '10vh',
       }}
     >
-      <Header />
-      <Box
-        sx={{
-          display: 'flex',
-          flexBasis: '100%',
-          flexDirection: 'column',
-          marginY: 1,
-        }}
-      >
-        <Router>
+      <Router>
+        <Header />
+        <Box
+          sx={{
+            display: 'flex',
+            flexBasis: '100%',
+            flexDirection: 'column',
+            marginY: 1,
+          }}
+        >
           <Suspense fallback={<CircularProgress />}>
             <Routes>
               <Route path='/question1' element={<QuestionOne />} />
@@ -43,9 +45,9 @@ const App: React.FC = () => {
               <Route path='/question7' element={<QuestionSeven />} />
             </Routes>
           </Suspense>
-        </Router>
-      </Box>
-      <Footer />
+        </Box>
+        <Footer />
+      </Router>
     </Box>
   )
 }
