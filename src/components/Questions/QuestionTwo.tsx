@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useRef } from 'react'
 import {
   Button,
   Typography,
@@ -7,28 +7,38 @@ import {
   TextField,
 } from '@mui/material'
 
-const delay = (ms: number): Promise<void> =>
-  new Promise((resolve) => setTimeout(resolve, ms))
+const isPowerOfTwo = (num: number): boolean => (num & (num - 1)) === 0
 
-const printItemsWithExponentialDelay = async (
+const runBackgroundProcess = (
   arr: string[],
   setDisplay: React.Dispatch<React.SetStateAction<string>>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  setIsRunning: React.Dispatch<React.SetStateAction<boolean>>,
   stopRef: React.MutableRefObject<boolean>,
   setElapsed: React.Dispatch<React.SetStateAction<number>>
 ) => {
+  let elapsedTime = 0
   setLoading(true)
   setElapsed(0)
 
-  for (let i = 0; i < arr.length; i++) {
-    if (stopRef.current) break
-    const delayTime = Math.pow(2, i) * 1000
-    await delay(delayTime)
-    if (stopRef.current) break
-    setDisplay((prev) => prev + arr[i] + ' ')
-  }
+  const intervalId = setInterval(() => {
+    elapsedTime += 1
+    setElapsed(elapsedTime)
 
-  setLoading(false)
+    if (isPowerOfTwo(elapsedTime)) {
+      const index = Math.log2(elapsedTime)
+      if (index < arr.length) {
+        setDisplay((prev) => `${prev} ${arr[index]}(${elapsedTime}s)`)
+      }
+    }
+
+    if (stopRef.current || elapsedTime >= Math.pow(2, arr.length - 1)) {
+      clearInterval(intervalId)
+      setLoading(false)
+      setIsRunning(false)
+      return
+    }
+  }, 1000)
 }
 
 const QuestionTwo: React.FC = () => {
@@ -40,16 +50,6 @@ const QuestionTwo: React.FC = () => {
 
   const stopRef = useRef<boolean>(false)
 
-  useEffect(() => {
-    let timer: NodeJS.Timeout
-    if (loading) {
-      timer = setInterval(() => {
-        setElapsed((prev) => prev + 1)
-      }, 1000)
-    } else setIsRunning(false)
-    return () => clearInterval(timer)
-  }, [loading])
-
   const handleStartStop = () => {
     if (isRunning) {
       stopRef.current = true
@@ -59,10 +59,11 @@ const QuestionTwo: React.FC = () => {
       stopRef.current = false
       setDisplay('')
       const items = inputValue.split(',').map((item) => item.trim())
-      printItemsWithExponentialDelay(
+      runBackgroundProcess(
         items,
         setDisplay,
         setLoading,
+        setIsRunning,
         stopRef,
         setElapsed
       )
