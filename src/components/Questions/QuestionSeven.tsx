@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { TextField, Button, Typography, Box } from '@mui/material'
+import { TextField, Button, Typography, Box, Paper } from '@mui/material'
 import MermaidChart from '../MermaidChart'
 
 interface CarrotType {
@@ -107,99 +107,117 @@ const QuestionSeven: React.FC = () => {
   }
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        width: '95vw',
-        margin: 2,
-        padding: 3,
-        backgroundColor: '#f5f5f5',
-        textAlign: 'center',
-        flexDirection: 'column',
-      }}
-    >
-      <Typography variant='h6' gutterBottom color='black'>
-        Question 7: Maximum Carrot Value in a Bag
-      </Typography>
-
-      <TextField
-        fullWidth
-        variant='outlined'
-        label='Enter carrot types as JSON '
-        value={carrotTypesInput}
-        onChange={handleCarrotTypesChange}
-        sx={{
-          width: '50%',
-          marginY: 2,
-        }}
-      />
-
-      <TextField
-        fullWidth
-        variant='outlined'
-        label='Enter bag capacity (kg)'
-        value={capacityInput}
-        onChange={handleCapacityChange}
-        sx={{
-          width: '50%',
-          marginBottom: 2,
-        }}
-      />
-
-      <Button
-        variant='contained'
-        color='primary'
-        onClick={handleSubmit}
-        style={{ width: '30%' }}
+    <Box>
+      <Paper
+        elevation={3}
+        sx={{ padding: 2, margin: 1, textAlign: 'center', alignSelf: 'center' }}
       >
-        Calculate Maximum Value
-      </Button>
-      {maxValue !== null && (
-        <Box
-          sx={{
-            marginTop: 3,
-            border: '1px solid grey',
-            borderRadius: 2,
-            display: 'flex',
-            justifyContent: 'center',
-            padding: 2,
-            width: 'max-content',
-          }}
-        >
-          <Typography variant='h6' color='primary'>
-            Maximum Value the Bag Can Hold: {maxValue}
-          </Typography>
-        </Box>
-      )}
+        <Typography variant='h6' gutterBottom style={{ maxWidth: '1200px' }}>
+          <strong>"</strong>A building has 100 floors. One of the floors is the
+          highest floor an egg can be dropped from without breaking. <br />
+          If an egg is dropped from above that floor, it will break. <br />
+          If it is dropped from that floor or below, it will be completely
+          undamaged and you can drop the egg again. <br />
+          Given two eggs, find the highest floor an egg can be dropped from
+          without breaking, with as few drops as possible in the worst-case
+          scenario.<strong>"</strong>
+        </Typography>
+      </Paper>
 
-      {dpList.length > 0 && (
-        <Box
-          sx={{
-            marginY: 3,
-            border: '1px solid grey',
-            borderRadius: 2,
-            display: 'flex',
-            paddingX: 3,
-            paddingY: 1,
-            flexDirection: 'column',
-            textAlign: 'left',
-          }}
-        >
-          <Typography variant='h6' color='black'>
-            DP Table:
-          </Typography>
+      <Box
+        sx={{
+          display: 'flex',
+          width: '95vw',
+          margin: 2,
+          padding: 3,
+          backgroundColor: '#f5f5f5',
+          textAlign: 'center',
+          flexDirection: 'column',
+        }}
+      >
+        <Typography variant='h6' gutterBottom color='black'>
+          Question 7: Maximum Carrot Value in a Bag
+        </Typography>
 
-          {dpList.map((item) => (
-            <Typography variant='body1' key={item.capacity}>
-              <strong>dp[{item.capacity}]</strong> = {item.capacity}kg,{' '}
-              {item.value}{' '}
-              <label style={{ color: '#00bcd4' }}>({item.explanation})</label>
+        <TextField
+          fullWidth
+          variant='outlined'
+          label='Enter carrot types as JSON '
+          value={carrotTypesInput}
+          onChange={handleCarrotTypesChange}
+          sx={{
+            width: '50%',
+            marginY: 2,
+          }}
+        />
+
+        <TextField
+          fullWidth
+          variant='outlined'
+          label='Enter bag capacity (kg)'
+          value={capacityInput}
+          onChange={handleCapacityChange}
+          sx={{
+            width: '50%',
+            marginBottom: 2,
+          }}
+        />
+
+        <Button
+          variant='contained'
+          color='primary'
+          onClick={handleSubmit}
+          style={{ width: '30%' }}
+        >
+          Calculate Maximum Value
+        </Button>
+        {maxValue !== null && (
+          <Box
+            sx={{
+              marginTop: 3,
+              border: '1px solid grey',
+              borderRadius: 2,
+              display: 'flex',
+              justifyContent: 'center',
+              padding: 2,
+              width: 'max-content',
+            }}
+          >
+            <Typography variant='h6' color='primary'>
+              Maximum Value the Bag Can Hold: {maxValue}
             </Typography>
-          ))}
-        </Box>
-      )}
+          </Box>
+        )}
 
-      {mermaidCode && <MermaidChart chart={mermaidCode} />}
+        {dpList.length > 0 && (
+          <Box
+            sx={{
+              marginY: 3,
+              border: '1px solid grey',
+              borderRadius: 2,
+              display: 'flex',
+              paddingX: 3,
+              paddingY: 1,
+              flexDirection: 'column',
+              textAlign: 'left',
+            }}
+          >
+            <Typography variant='h6' color='black'>
+              DP Table:
+            </Typography>
+
+            {dpList.map((item) => (
+              <Typography variant='body1' key={item.capacity}>
+                <strong>dp[{item.capacity}]</strong> = {item.capacity}kg,{' '}
+                {item.value}{' '}
+                <label style={{ color: '#00bcd4' }}>({item.explanation})</label>
+              </Typography>
+            ))}
+          </Box>
+        )}
+
+        {mermaidCode && <MermaidChart chart={mermaidCode} />}
+      </Box>
     </Box>
   )
 }
