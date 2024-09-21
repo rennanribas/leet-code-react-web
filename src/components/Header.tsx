@@ -5,15 +5,13 @@ import {
   Typography,
   IconButton,
   Drawer,
-  List,
   ListItem,
-  ListItemText,
   Box,
   Button,
 } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
 import CloseIcon from '@mui/icons-material/Close'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const Header: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false)
@@ -56,9 +54,11 @@ const Header: React.FC = () => {
           >
             <MenuIcon sx={{ color: 'white' }} />
           </IconButton>
-          <Typography variant='h6' color='white'>
-            Metrobi Challenge - Rennan Ribas
-          </Typography>
+          <Link to='/' style={{ textDecoration: 'none' }}>
+            <Typography variant='h6' color='white'>
+              Metrobi Challenge - Rennan Ribas
+            </Typography>
+          </Link>
         </Toolbar>
       </AppBar>
 

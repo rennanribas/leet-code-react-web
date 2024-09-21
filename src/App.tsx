@@ -3,6 +3,7 @@ import { Box, CircularProgress } from '@mui/material'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import HomePage from './components/HomePage'
 
 const QuestionOne = lazy(() => import('./components/Questions/QuestionOne'))
 const QuestionTwo = lazy(() => import('./components/Questions/QuestionTwo'))
@@ -36,6 +37,7 @@ const App: React.FC = () => {
         >
           <Suspense fallback={<CircularProgress />}>
             <Routes>
+              <Route path='/' element={<HomePage />} />
               <Route path='/question1' element={<QuestionOne />} />
               <Route path='/question2' element={<QuestionTwo />} />
               <Route path='/question3' element={<QuestionThree />} />
