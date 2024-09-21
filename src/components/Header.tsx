@@ -56,7 +56,7 @@ const Header: React.FC = () => {
           </IconButton>
           <Link to='/' style={{ textDecoration: 'none' }}>
             <Typography variant='h6' color='white'>
-              Metrobi Challenge - Rennan Ribas
+              Coding Challenge - Rennan Ribas
             </Typography>
           </Link>
         </Toolbar>
