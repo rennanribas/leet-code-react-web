@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Button, List, ListItem, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 
 const Sidebar: React.FC = () => {
   return (
