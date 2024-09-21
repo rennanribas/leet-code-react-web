@@ -4,6 +4,8 @@
 
 This repository contains the Metrobi Challenge App, a technical challenge designed for a senior position at Metrobi. The app demonstrates solutions to various technical questions using React, JavaScript, and TypeScript.
 
+Try it out at: https://metrobi-challenge-app.onrender.com/
+
 ## Project Structure
 
 - **`src/`**: Contains the source code for the application.
