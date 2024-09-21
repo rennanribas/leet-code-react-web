@@ -70,7 +70,7 @@ const QuestionSeven: React.FC = () => {
   const [carrotTypesInput, setCarrotTypesInput] = useState<string>(
     '[{"kg": 5, "price": 100}, {"kg": 7, "price": 150}, {"kg": 2, "price": 70}]'
   )
-  const [capacityInput, setCapacityInput] = useState<string>('7')
+  const [capacityInput, setCapacityInput] = useState<string>('36')
   const [maxValue, setMaxValue] = useState<number | null>(null)
   const [mermaidCode, setMermaidCode] = useState<string>('')
   const [dpList, setDpList] = useState<
@@ -109,10 +109,13 @@ const QuestionSeven: React.FC = () => {
   return (
     <Box
       sx={{
-        maxWidth: 600,
-        margin: '0 auto',
+        display: 'flex',
+        width: '95vw',
+        margin: 2,
         padding: 3,
         backgroundColor: '#f5f5f5',
+        textAlign: 'center',
+        flexDirection: 'column',
       }}
     >
       <Typography variant='h6' gutterBottom color='black'>
@@ -122,10 +125,13 @@ const QuestionSeven: React.FC = () => {
       <TextField
         fullWidth
         variant='outlined'
-        label='Enter carrot types as JSON (default: [{"kg": 5, "price": 100}, {"kg": 7, "price": 150}, {"kg": 2, "price": 70}])'
+        label='Enter carrot types as JSON '
         value={carrotTypesInput}
         onChange={handleCarrotTypesChange}
-        sx={{ marginBottom: 2 }}
+        sx={{
+          width: '50%',
+          marginY: 2,
+        }}
       />
 
       <TextField
@@ -134,13 +140,20 @@ const QuestionSeven: React.FC = () => {
         label='Enter bag capacity (kg)'
         value={capacityInput}
         onChange={handleCapacityChange}
-        sx={{ marginBottom: 2 }}
+        sx={{
+          width: '50%',
+          marginBottom: 2,
+        }}
       />
 
-      <Button variant='contained' color='primary' onClick={handleSubmit}>
+      <Button
+        variant='contained'
+        color='primary'
+        onClick={handleSubmit}
+        style={{ width: '30%' }}
+      >
         Calculate Maximum Value
       </Button>
-
       {maxValue !== null && (
         <Box
           sx={{
@@ -149,7 +162,8 @@ const QuestionSeven: React.FC = () => {
             borderRadius: 2,
             display: 'flex',
             justifyContent: 'center',
-            padding: 1,
+            padding: 2,
+            width: 'max-content',
           }}
         >
           <Typography variant='h6' color='primary'>
@@ -168,6 +182,7 @@ const QuestionSeven: React.FC = () => {
             paddingX: 3,
             paddingY: 1,
             flexDirection: 'column',
+            textAlign: 'left',
           }}
         >
           <Typography variant='h6' color='black'>

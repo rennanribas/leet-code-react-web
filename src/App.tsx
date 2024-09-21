@@ -30,7 +30,6 @@ const App: React.FC = () => {
         <Box
           sx={{
             display: 'flex',
-            flexBasis: '100%',
             flexDirection: 'column',
             marginY: 1,
           }}
