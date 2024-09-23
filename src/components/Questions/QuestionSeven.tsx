@@ -3,68 +3,203 @@ import { TextField, Button, Typography, Box, Paper } from '@mui/material'
 import MermaidChart from '../MermaidChart'
 
 interface CarrotType {
-  kg: number
+  weight: number
   price: number
 }
 
-const getMaxValue = (
-  carrotTypes: CarrotType[],
-  capacity: number,
-  setMermaidCode: (code: string) => void,
-  setDpList: (
-    list: Array<{ capacity: number; value: number; explanation: string }>
-  ) => void
-) => {
-  const dp = Array(capacity + 1).fill(0)
-  let code = 'graph TD\n'
-  const dpList = []
-  const carrotUsage = carrotTypes.map(() => Array(capacity + 1).fill(0))
+interface DpStep {
+  capacity: number
+  value: number
+  explanation: string
+}
 
-  for (let i = 0; i <= capacity; i++) {
-    if (i === 0) {
-      dpList.push({
-        capacity: i,
-        value: dp[i],
-        explanation: 'Base case: No carrots can be taken.',
-      })
-      continue
-    }
-    let explanation = ''
-    let newGraphLine = ''
-    for (let j = 0; j < carrotTypes.length; j++) {
-      const carrot = carrotTypes[j]
+class CarrotBagSolver {
+  private carrotTypes: CarrotType[]
+  private capacity: number
+  private dpArray: number[]
+  private dpSteps: DpStep[]
+  private mermaidCode: string
 
-      if (carrot.kg <= i) {
-        const newValue = dp[i - carrot.kg] + carrot.price
+  constructor(carrotTypes: CarrotType[], capacity: number) {
+    this.carrotTypes = carrotTypes
+    this.capacity = capacity
+    this.dpArray = []
+    this.dpSteps = []
+    this.mermaidCode = 'graph LR\n'
+  }
 
-        if (newValue > dp[i]) {
-          explanation = `dp[${i - carrot.kg}](${dp[i - carrot.kg]}) + dp[${
-            carrot.kg
-          }](${dp[carrot.kg]}) 
-            = ${newValue}`
+  public solve(): number {
+    const dp = Array(this.capacity + 1).fill(0)
+    const carrotUsage = this.carrotTypes.map(() =>
+      Array(this.capacity + 1).fill(0)
+    )
 
-          newGraphLine += `dp${i}[dp${i}=${dp[i - carrot.kg]} +${
-            dp[carrot.kg]
-          } = ${newValue}] --> dp${i - carrot.kg} --> dp${carrot.kg}\n`
+    for (
+      let currentCapacity = 0;
+      currentCapacity <= this.capacity;
+      currentCapacity++
+    ) {
+      if (currentCapacity === 0) {
+        this.dpSteps.push({
+          capacity: currentCapacity,
+          value: dp[currentCapacity],
+          explanation: 'Base case: No carrots can be taken.',
+        })
+        continue
+      }
+      let stepExplanation = ''
+      let mermaidNewGraphLine = ''
+      for (
+        let carrotTypeIndex = 0;
+        carrotTypeIndex < this.carrotTypes.length;
+        carrotTypeIndex++
+      ) {
+        const carrot = this.carrotTypes[carrotTypeIndex]
 
-          dp[i] = newValue
-          carrotUsage[j][i] = carrotUsage[j][i - carrot.kg] + 1
-          for (let k = 0; k < carrotTypes.length; k++) {
-            if (k !== j) {
-              carrotUsage[k][i] = carrotUsage[k][i - carrot.kg]
+        if (carrot.weight <= currentCapacity) {
+          const newValue = dp[currentCapacity - carrot.weight] + carrot.price
+
+          if (newValue > dp[currentCapacity]) {
+            stepExplanation = `dp[${currentCapacity - carrot.weight}](${
+              dp[currentCapacity - carrot.weight]
+            }) + price(${carrot.price}) = ${newValue}`
+
+            mermaidNewGraphLine += `dp${currentCapacity}[dp${currentCapacity}=${
+              dp[currentCapacity - carrot.weight]
+            } + ${carrot.price} = ${newValue}] --> dp${
+              currentCapacity - carrot.weight
+            }\n`
+
+            dp[currentCapacity] = newValue
+            carrotUsage[carrotTypeIndex][currentCapacity] =
+              carrotUsage[carrotTypeIndex][currentCapacity - carrot.weight] + 1
+            for (let k = 0; k < this.carrotTypes.length; k++) {
+              if (k !== carrotTypeIndex) {
+                carrotUsage[k][currentCapacity] =
+                  carrotUsage[k][currentCapacity - carrot.weight]
+              }
             }
           }
         }
       }
+      this.mermaidCode += mermaidNewGraphLine
+      this.dpSteps.push({
+        capacity: currentCapacity,
+        value: dp[currentCapacity],
+        explanation: stepExplanation,
+      })
     }
-    code += newGraphLine
-    dpList.push({ capacity: i, value: dp[i], explanation })
+
+    this.dpArray = dp
+    return dp[this.capacity]
   }
 
-  setMermaidCode(code)
-  setDpList(dpList)
-  return dp[capacity]
+  public getDpArray(): number[] {
+    return this.dpArray
+  }
+
+  public getDpSteps(): DpStep[] {
+    return this.dpSteps
+  }
+
+  public getMermaidCode(): string {
+    return this.mermaidCode
+  }
 }
+
+const parseCarrotTypes = (input: string): CarrotType[] => {
+  const carrotTypes = JSON.parse(input)
+  if (!Array.isArray(carrotTypes)) {
+    throw new Error('Invalid input: carrot types should be an array.')
+  }
+  return carrotTypes.map((carrot) => {
+    if (typeof carrot.kg !== 'number' || typeof carrot.price !== 'number') {
+      throw new Error(
+        'Invalid input: each carrot type must have a kg and price as numbers.'
+      )
+    }
+    return { weight: carrot.kg, price: carrot.price }
+  })
+}
+
+const DpSteps: React.FC<{ dpSteps: DpStep[] }> = ({ dpSteps }) => (
+  <Box
+    sx={{
+      marginY: 3,
+      border: '1px solid grey',
+      borderRadius: 2,
+      display: 'flex',
+      paddingX: 3,
+      paddingY: 1,
+      flexDirection: 'column',
+      textAlign: 'left',
+    }}
+  >
+    <Typography variant='h6' color='black'>
+      Steps:
+    </Typography>
+
+    {dpSteps.map((item) => (
+      <Typography variant='body1' key={item.capacity}>
+        <strong>dp[{item.capacity}]</strong> = {item.value}{' '}
+        <label style={{ color: '#00bcd4' }}>({item.explanation})</label>
+      </Typography>
+    ))}
+  </Box>
+)
+
+const DpTable: React.FC<{ dpArray: number[] }> = ({ dpArray }) => (
+  <Box
+    sx={{
+      marginY: 3,
+      border: '1px solid grey',
+      borderRadius: 2,
+      display: 'flex',
+      paddingX: 3,
+      paddingY: 1,
+      flexDirection: 'column',
+      textAlign: 'left',
+      overflowX: 'auto',
+      width: '69%',
+    }}
+  >
+    <Typography variant='h6' color='black'>
+      DP Table:
+    </Typography>
+    <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+      <tbody>
+        <tr key={0}>
+          <td style={{ border: '1px solid black', padding: '8px' }}>
+            Capacity
+          </td>
+          {dpArray.map((_, i) => (
+            <td
+              key={`cap-${i}`}
+              style={{ border: '1px solid black', padding: '8px' }}
+            >
+              {i}
+            </td>
+          ))}
+        </tr>
+        <tr key={1}>
+          <td style={{ border: '1px solid black', padding: '8px' }}>
+            Max Value
+          </td>
+
+          {dpArray.map((value, i) => (
+            <td
+              key={`val-${i}`}
+              style={{ border: '1px solid black', padding: '8px' }}
+            >
+              {value}
+            </td>
+          ))}
+        </tr>
+      </tbody>
+    </table>
+    <Box />
+  </Box>
+)
 
 const QuestionSeven: React.FC = () => {
   const [carrotTypesInput, setCarrotTypesInput] = useState<string>(
@@ -73,9 +208,8 @@ const QuestionSeven: React.FC = () => {
   const [capacityInput, setCapacityInput] = useState<string>('36')
   const [maxValue, setMaxValue] = useState<number | null>(null)
   const [mermaidCode, setMermaidCode] = useState<string>('')
-  const [dpList, setDpList] = useState<
-    Array<{ capacity: number; value: number; explanation: string }>
-  >([])
+  const [dpList, setDpList] = useState<DpStep[]>([])
+  const [dpArray, setDpArray] = useState<number[]>([])
 
   const handleCarrotTypesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCarrotTypesInput(e.target.value)
@@ -87,22 +221,21 @@ const QuestionSeven: React.FC = () => {
 
   const handleSubmit = () => {
     try {
-      const carrotTypes: CarrotType[] = JSON.parse(carrotTypesInput)
+      const carrotTypes = parseCarrotTypes(carrotTypesInput)
       const capacity = parseInt(capacityInput, 10)
 
-      if (!Array.isArray(carrotTypes) || isNaN(capacity)) {
-        throw new Error('Invalid input')
+      if (isNaN(capacity)) {
+        throw new Error('Invalid capacity: must be a number.')
       }
 
-      const result = getMaxValue(
-        carrotTypes,
-        capacity,
-        setMermaidCode,
-        setDpList
-      )
+      const solver = new CarrotBagSolver(carrotTypes, capacity)
+      const result = solver.solve()
       setMaxValue(result)
-    } catch (error) {
-      alert('Please enter valid carrot types and capacity.')
+      setDpArray(solver.getDpArray())
+      setDpList(solver.getDpSteps())
+      setMermaidCode(solver.getMermaidCode())
+    } catch (error: any) {
+      alert(error.message)
     }
   }
 
@@ -113,14 +246,11 @@ const QuestionSeven: React.FC = () => {
         sx={{ padding: 2, margin: 1, textAlign: 'center', alignSelf: 'center' }}
       >
         <Typography variant='h6' gutterBottom style={{ maxWidth: '1200px' }}>
-          <strong>"</strong>A building has 100 floors. One of the floors is the
-          highest floor an egg can be dropped from without breaking. <br />
-          If an egg is dropped from above that floor, it will break. <br />
-          If it is dropped from that floor or below, it will be completely
-          undamaged and you can drop the egg again. <br />
-          Given two eggs, find the highest floor an egg can be dropped from
-          without breaking, with as few drops as possible in the worst-case
-          scenario.<strong>"</strong>
+          <strong>"</strong>Think that you have an unlimited number of carrots,
+          but a limited number of carrot types. Also, you have one bag that can
+          hold a limited weight. Each type of carrot has a weight and a price.
+          Write a function that takes carrotTypes and capacity and return the
+          maximum value the bag can hold.<strong>"</strong>
         </Typography>
       </Paper>
 
@@ -192,27 +322,15 @@ const QuestionSeven: React.FC = () => {
         {dpList.length > 0 && (
           <Box
             sx={{
-              marginY: 3,
-              border: '1px solid grey',
-              borderRadius: 2,
+              marginTop: 3,
               display: 'flex',
-              paddingX: 3,
-              paddingY: 1,
-              flexDirection: 'column',
-              textAlign: 'left',
+              flexDirection: 'row',
+              width: '100%',
+              justifyContent: 'center',
             }}
           >
-            <Typography variant='h6' color='black'>
-              DP Table:
-            </Typography>
-
-            {dpList.map((item) => (
-              <Typography variant='body1' key={item.capacity}>
-                <strong>dp[{item.capacity}]</strong> = {item.capacity}kg,{' '}
-                {item.value}{' '}
-                <label style={{ color: '#00bcd4' }}>({item.explanation})</label>
-              </Typography>
-            ))}
+            <DpSteps dpSteps={dpList} />
+            {dpArray.length > 0 && <DpTable dpArray={dpArray} />}
           </Box>
         )}
 
