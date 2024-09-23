@@ -9,49 +9,49 @@ const QuestionFive: React.FC = () => {
   const [mermaidCode, setMermaidCode] = useState<string>('')
   const [dpArray, setDpArray] = useState<number[][]>([])
 
-  const eggDrop = (n: number, k: number): number[][] => {
+  const eggDrop = (eggs: number, floors: number): number[][] => {
     // Initialize DP table with base cases
-    const eggFloor = Array(n + 1)
+    const eggFloor = Array(eggs + 1)
       .fill(0)
-      .map(() => Array(k + 1).fill(0))
+      .map(() => Array(floors + 1).fill(0))
     let code = 'graph TD\n'
 
     // Base cases
-    for (let i = 1; i <= n; i++) {
-      eggFloor[i][0] = 0
-      eggFloor[i][1] = 1
+    for (let egg = 1; egg <= eggs; egg++) {
+      eggFloor[egg][0] = 0
+      eggFloor[egg][1] = 1
     }
 
-    for (let j = 1; j <= k; j++) {
-      eggFloor[1][j] = j
+    for (let floor = 1; floor <= floors; floor++) {
+      eggFloor[1][floor] = floor
     }
 
     // DP computation
-    for (let i = 2; i <= n; i++) {
-      for (let j = 2; j <= k; j++) {
-        eggFloor[i][j] = Infinity
+    for (let egg = 2; egg <= eggs; egg++) {
+      for (let floor = 2; floor <= floors; floor++) {
+        eggFloor[egg][floor] = Infinity
         let comparisonChoosed = ''
-        for (let x = 1; x <= j; x++) {
-          const broken = eggFloor[i - 1][x - 1] // Egg breaks
-          const notBroken = eggFloor[i][j - x] // Egg doesn't break
+        for (let x = 1; x <= floor; x++) {
+          const broken = eggFloor[egg - 1][x - 1] // Egg breaks
+          const notBroken = eggFloor[egg][floor - x] // Egg doesn't break
           const res = 1 + Math.max(broken, notBroken)
-          if (res < eggFloor[i][j]) {
-            eggFloor[i][j] = res
+          if (res < eggFloor[egg][floor]) {
+            eggFloor[egg][floor] = res
             // Build the mermaid code to show the dependency and reasoning
             if (broken >= notBroken) {
-              comparisonChoosed = `dp${i}_${j}["dp[${i}][${j}] = 1 + dp[${
-                i - 1
+              comparisonChoosed = `dp${egg}_${floor}["dp[${egg}][${floor}] = 1 + dp[${
+                egg - 1
               }][${x - 1}] = ${res}"]\n`
-              comparisonChoosed += `dp${i}_${j} --> dp${i - 1}_${x - 1}["dp[${
-                i - 1
-              }][${x - 1}] = ${broken}"]\n`
+              comparisonChoosed += `dp${egg}_${floor} --> dp${egg - 1}_${
+                x - 1
+              }["dp[${egg - 1}][${x - 1}] = ${broken}"]\n`
             } else {
-              comparisonChoosed = `dp${i}_${j}["dp[${i}][${j}] = 1 + dp[${i}][${
-                j - x
+              comparisonChoosed = `dp${egg}_${floor}["dp[${egg}][${floor}] = 1 + dp[${egg}][${
+                floor - x
               }] = ${res}"]\n`
-              comparisonChoosed += `dp${i}_${j} --> dp${i}_${j - x}["dp[${i}][${
-                j - x
-              }] = ${notBroken}"]\n`
+              comparisonChoosed += `dp${egg}_${floor} --> dp${egg}_${
+                floor - x
+              }["dp[${egg}][${floor - x}] = ${notBroken}"]\n`
             }
           }
         }
