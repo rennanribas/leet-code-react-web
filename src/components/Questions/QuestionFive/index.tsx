@@ -5,7 +5,9 @@ import { Box, Paper, Typography } from '@mui/material'
 
 const QuestionFiveIndex: React.FC = () => {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+    <Box
+      sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+    >
       <Paper
         elevation={3}
         sx={{ padding: 2, margin: 1, textAlign: 'center', alignSelf: 'center' }}
@@ -23,6 +25,8 @@ const QuestionFiveIndex: React.FC = () => {
       </Paper>
       <Box sx={{ display: 'flex', flexDirection: 'row' }}>
         <QuestionFive />
+      </Box>
+      <Box sx={{ display: 'flex', flexDirection: 'row' }}>
         <Explanation />
       </Box>
     </Box>
