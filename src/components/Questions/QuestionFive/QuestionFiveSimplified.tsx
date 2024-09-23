@@ -16,32 +16,32 @@ const QuestionFiveSimplified: React.FC = () => {
       .map(() => Array(floors + 1).fill(0))
 
     // Base cases: if we have 1 egg, the number of drops equals the number of floors
-    for (let j = 1; j <= floors; j++) {
-      eggFloor[1][j] = j
+    for (let floor = 1; floor <= floors; floor++) {
+      eggFloor[1][floor] = floor
     }
 
     // Base cases: for any number of eggs, 0 floors need 0 drops, and 1 floor needs 1 drop
-    for (let i = 1; i <= eggs; i++) {
-      eggFloor[i][0] = 0
-      eggFloor[i][1] = 1
+    for (let egg = 1; egg <= eggs; egg++) {
+      eggFloor[egg][0] = 0
+      eggFloor[egg][1] = 1
     }
 
     // Fill the DP table using dynamic programming
-    for (let i = 2; i <= eggs; i++) {
+    for (let egg = 2; egg <= eggs; egg++) {
       // Iterate over each number of eggs
-      for (let j = 2; j <= floors; j++) {
+      for (let floor = 2; floor <= floors; floor++) {
         // Iterate over each number of floors
-        eggFloor[i][j] = floors // Initialize with the maximum possible value
+        eggFloor[egg][floor] = floors // Initialize with the maximum possible value
 
         // Try dropping the egg from each floor and calculate the minimum number of drops
-        for (let x = 1; x <= j; x++) {
-          const breakCase = eggFloor[i - 1][x - 1] // Case where the egg breaks
-          const noBreakCase = eggFloor[i][j - x] // Case where the egg does not break
+        for (let x = 1; x <= floor; x++) {
+          const breakCase = eggFloor[egg - 1][x - 1] // Case where the egg breaks
+          const noBreakCase = eggFloor[egg][floor - x] // Case where the egg does not break
           const drops = 1 + (breakCase > noBreakCase ? breakCase : noBreakCase) // Choose the worst case
 
           // Update the DP table with the minimum number of drops
-          if (drops < eggFloor[i][j]) {
-            eggFloor[i][j] = drops
+          if (drops < eggFloor[egg][floor]) {
+            eggFloor[egg][floor] = drops
           }
         }
       }
