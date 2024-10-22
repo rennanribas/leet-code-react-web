@@ -1,8 +1,6 @@
-# Metrobi Challenge App
-
 ## Overview
 
-This repository contains the Metrobi Challenge App, a technical challenge designed for a senior position at Metrobi. The app demonstrates solutions to various technical questions using React, JavaScript, and TypeScript.
+This repository contains the an leet code for a technical challenge designed for a senior position. The app demonstrates solutions to various technical questions using React, JavaScript, and TypeScript.
 
 Try it out at: https://metrobi-challenge-app.onrender.com/
 
